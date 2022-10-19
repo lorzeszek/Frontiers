@@ -27,8 +27,8 @@ namespace FrontiersTask
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(15);
             driver.Manage().Window.Maximize();
             driver.Navigate().GoToUrl("https://www.skyscrapercenter.com/buildings?list=tallest100-construction");
+            driver.FindElement(By.CssSelector(".js-cookie-consent-agree")).Click();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-
         }
 
         [TearDown]
