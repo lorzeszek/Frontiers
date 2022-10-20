@@ -18,6 +18,7 @@ namespace FrontiersTask.Pages
         public int CityColumnIndex { get; set; }
         public int FloorsColumnIndex { get; set; }
         public bool IsTargetBuildingOnTheList { get; set; }
+        public string MostFloorsNumber { get; set; }
 
         public MainPage(IWebDriver driver) : base(driver) { }
 
@@ -83,6 +84,8 @@ namespace FrontiersTask.Pages
         public string GetBuildingWithMaxFloors()
         {
             var targetBuilding = BuildingsTableRows.FirstOrDefault(x => x.FindElements(By.TagName("td"),5).Max(x => x.GetAttribute("class").Contains("forget")));
+            MostFloorsNumber = targetBuilding.FindElements(By.TagName("td")).ElementAt(FloorsColumnIndex)?.Text;
+
             return targetBuilding.FindElements(By.TagName("td"),5).FirstOrDefault(x => x.GetAttribute("class").Contains("building-hover")).Text;
         }
     }

@@ -55,7 +55,7 @@ namespace FrontiersTask
                 .GetFloorsColumnIndex()
                 .GetBuildingWithMaxFloors();
 
-            Console.WriteLine(string.Format("The building with the most floors number is {0}.", maxFloorsBuildingName));
+            Console.WriteLine(string.Format("The building with the most floors number is {0}, with {1} floors.", maxFloorsBuildingName, mainPage.MostFloorsNumber));
         }
     }
 }
