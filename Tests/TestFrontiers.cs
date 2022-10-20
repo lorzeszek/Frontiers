@@ -16,7 +16,7 @@ namespace FrontiersTask
         {
             var mainPage = new MainPage(_driver);
 
-            var buildingsCount = mainPage.SelectTallest100BuildingsFilter().GetBuildingsCount().ToString();
+            var buildingsCount = mainPage.GetBuildingsCount().ToString();
 
             Assert.AreEqual(expectedBuildingCount, buildingsCount, string.Format("The list contains {0} instead of {1} elemets!", buildingsCount, expectedBuildingCount));
         }
@@ -28,7 +28,6 @@ namespace FrontiersTask
             var mainPage = new MainPage(_driver);
 
             string targetBuildingFloorsCount = mainPage
-                .SelectTallest100BuildingsFilter()
                 .GetCityColumnIndex()
                 .GetBuildingNameColumnIndex()
                 .GetFloorsColumnIndex()
@@ -50,7 +49,7 @@ namespace FrontiersTask
         public void GetMaxFloorsBuildingTest()
         {
             var mainPage = new MainPage(_driver);
-            string maxFloorsBuildingName = mainPage.SelectTallest100BuildingsFilter()
+            string maxFloorsBuildingName = mainPage
                 .GetCityColumnIndex()
                 .GetBuildingNameColumnIndex()
                 .GetFloorsColumnIndex()

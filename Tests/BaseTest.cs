@@ -19,11 +19,11 @@ namespace FrontiersTask
         public void Setup()
         {
             _driver = new DriverFactory().Create(_browser);
-            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+            _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             _driver.Manage().Window.Maximize();
 
             MainPage mainPage = new MainPage(_driver);
-            mainPage.GoTo().CloseCookieNotification();
+            mainPage.GoTo().CloseCookieNotification().SelectTallest100BuildingsFilter();
         }
 
         [TearDown]
