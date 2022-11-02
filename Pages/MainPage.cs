@@ -1,5 +1,7 @@
 ﻿using FrontiersTask.Helpers;
+using NUnit.Framework;
 using OpenQA.Selenium;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -14,11 +16,10 @@ namespace FrontiersTask.Pages
 
         private IWebElement TargetBuilding { get; set; }
 
-        public int BuildingNameColumnIndex { get; set; }
-        public int CityColumnIndex { get; set; }
-        public int FloorsColumnIndex { get; set; }
+        public int BuildingNameColumnIndex => GetColumnIndex("NAME");
+        public int CityColumnIndex => GetColumnIndex("CITY");
+        public int FloorsColumnIndex => GetColumnIndex("FLOORS");
         public bool IsTargetBuildingOnTheList { get; set; }
-        public string MostFloorsNumber { get; set; }
 
         public MainPage(IWebDriver driver) : base(driver) { }
 
@@ -40,27 +41,11 @@ namespace FrontiersTask.Pages
             return this;
         }
 
-        public int GetBuildingsCount()
+        public void VerifyBuildingsCount(string expectedBuildingCount)
         {
-            return BuildingsTableRows.Count;
-        }
+            int buildingsCount = BuildingsTableRows.Count;
 
-        public MainPage GetBuildingNameColumnIndex()
-        {
-            BuildingNameColumnIndex = GetColumnIndex("NAME");
-            return this;
-        }
-
-        public MainPage GetCityColumnIndex()
-        {
-            CityColumnIndex = GetColumnIndex("CITY");
-            return this;
-        }
-
-        public MainPage GetFloorsColumnIndex()
-        {
-            FloorsColumnIndex = GetColumnIndex("FLOORS");
-            return this;
+            Assert.AreEqual(expectedBuildingCount, buildingsCount.ToString(), string.Format("The list contains {0} instead of {1} elemets!", buildingsCount, expectedBuildingCount));
         }
 
         public int GetColumnIndex(string columnName)
@@ -70,23 +55,51 @@ namespace FrontiersTask.Pages
 
         public MainPage CheckIfTargetBuildingExistsOnTheList(string buildingName, string city)
         {
-            TargetBuilding = BuildingsTableRows.FirstOrDefault(x => x.FindElements(By.TagName("td"),5).ElementAt(BuildingNameColumnIndex).Text == buildingName && x.FindElements(By.TagName("td"),5).ElementAt(CityColumnIndex).Text == city);
-            IsTargetBuildingOnTheList = TargetBuilding != null;
+            if (BuildingNameColumnIndex > 0 && CityColumnIndex > 0)
+            {
+                TargetBuilding = BuildingsTableRows.FirstOrDefault(x => x.FindElements(By.TagName("td"), 5).ElementAt(BuildingNameColumnIndex).Text == buildingName && x.FindElements(By.TagName("td"), 5).ElementAt(CityColumnIndex).Text == city);
+                IsTargetBuildingOnTheList = TargetBuilding != null;
 
-            return this;
+                Assert.IsTrue(IsTargetBuildingOnTheList, "There building with name: {0}, in the city: {1} was not found on the list!", buildingName, city);
+
+                return this;
+            }
+            else
+            {
+                throw new NoSuchElementException("There is no column with Building Name or Column with City!");
+            }
         }
 
-        public string GetBuildingFloorsNumber()
+        public void VerifyBuildingFloorsNumber(string expectedFloorsNumber)
         {
-            return TargetBuilding?.FindElements(By.TagName("td")).ElementAt(FloorsColumnIndex)?.Text ?? string.Empty;
+            if (FloorsColumnIndex > 0)
+            {
+                string targetBuildingFloors = TargetBuilding?.FindElements(By.TagName("td")).ElementAt(FloorsColumnIndex)?.Text;
+
+                Assert.AreEqual(expectedFloorsNumber, targetBuildingFloors, string.Format("The Lotte World Tower building has {0} floors instead of {1}!", targetBuildingFloors, expectedFloorsNumber));
+            }
+            else
+            {
+                throw new NoSuchElementException("There is no column with Floors number!");
+            }
         }
 
-        public string GetBuildingWithMaxFloors()
+        public void GetBuildingWithMaxFloors()
         {
             var targetBuilding = BuildingsTableRows.FirstOrDefault(x => x.FindElements(By.TagName("td"),5).Max(x => x.GetAttribute("class").Contains("forget")));
-            MostFloorsNumber = targetBuilding.FindElements(By.TagName("td")).ElementAt(FloorsColumnIndex)?.Text;
 
-            return targetBuilding.FindElements(By.TagName("td"),5).FirstOrDefault(x => x.GetAttribute("class").Contains("building-hover")).Text;
+            if (FloorsColumnIndex > 0)
+            {
+                string mostFloorsNumber = targetBuilding.FindElements(By.TagName("td")).ElementAt(FloorsColumnIndex)?.Text;
+
+                string maxFloorsBuildingName = targetBuilding.FindElements(By.TagName("td"), 5).FirstOrDefault(x => x.GetAttribute("class").Contains("building-hover")).Text;
+
+                Console.WriteLine(string.Format("The building with the most floors number is {0}, with {1} floors.", maxFloorsBuildingName, mostFloorsNumber));
+            }
+            else
+            {
+                throw new NoSuchElementException("There is no column with Floors number!");
+            }
         }
     }
 }

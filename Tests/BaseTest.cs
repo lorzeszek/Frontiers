@@ -10,6 +10,7 @@ namespace FrontiersTask
     {
         protected IWebDriver _driver;
         protected Browser _browser;
+        protected MainPage _mainPage;
         protected BaseTest(Browser browser)
         {
             _browser = browser;
@@ -22,8 +23,8 @@ namespace FrontiersTask
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(20);
             _driver.Manage().Window.Maximize();
 
-            MainPage mainPage = new MainPage(_driver);
-            mainPage.GoTo().CloseCookieNotification().SelectTallest100BuildingsFilter();
+            _mainPage = new MainPage(_driver);
+            _mainPage.GoTo().CloseCookieNotification().SelectTallest100BuildingsFilter();
         }
 
         [TearDown]
