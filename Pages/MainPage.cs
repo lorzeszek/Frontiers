@@ -19,7 +19,6 @@ namespace FrontiersTask.Pages
         public int BuildingNameColumnIndex => GetColumnIndex("NAME");
         public int CityColumnIndex => GetColumnIndex("CITY");
         public int FloorsColumnIndex => GetColumnIndex("FLOORS");
-        public bool IsTargetBuildingOnTheList { get; set; }
 
         public MainPage(IWebDriver driver) : base(driver) { }
 
@@ -58,9 +57,9 @@ namespace FrontiersTask.Pages
             if (BuildingNameColumnIndex > 0 && CityColumnIndex > 0)
             {
                 TargetBuilding = BuildingsTableRows.FirstOrDefault(x => x.FindElements(By.TagName("td"), 5).ElementAt(BuildingNameColumnIndex).Text == buildingName && x.FindElements(By.TagName("td"), 5).ElementAt(CityColumnIndex).Text == city);
-                IsTargetBuildingOnTheList = TargetBuilding != null;
+                bool isTargetBuildingOnTheList = TargetBuilding != null;
 
-                Assert.IsTrue(IsTargetBuildingOnTheList, "There building with name: {0}, in the city: {1} was not found on the list!", buildingName, city);
+                Assert.IsTrue(isTargetBuildingOnTheList, "There building with name: {0}, in the city: {1} was not found on the list!", buildingName, city);
 
                 return this;
             }
